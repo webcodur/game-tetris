@@ -5,7 +5,7 @@ import Display from './Display';
 import StartButton from './StartButton';
 import { usePlayer } from '../hooks/usePlayer';
 import { useStage } from '../hooks/useStage';
-import { createStage, checkCollision, STAGE_WIDTH } from '../gameHelpers';
+import { createStage, checkCollision } from '../gameHelpers';
 import {} from '../gameHelpers';
 import useInterval from '../hooks/useInterval';
 
@@ -33,9 +33,9 @@ const StyledTetris = styled.div`
 const ToggleButton = styled.button`
 	box-sizing: border-box;
 	margin: 0 0 20px 0;
-	padding: 20px;
+	padding: 5px;
 	min-height: 30px;
-	width: 100%;
+	width: 200px;
 	border-radius: 20px;
 	border: none;
 	color: white;
@@ -47,6 +47,23 @@ const ToggleButton = styled.button`
 
 	&:focus {
 		outline: 3px solid #fff;
+	}
+`;
+
+const InfoBox = styled.div`
+	background: #333;
+	color: white;
+	border-radius: 20px;
+	width: 200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	padding: 15px;
+	p {
+		margin: 0;
+		padding: 0;
 	}
 `;
 
@@ -200,19 +217,25 @@ const Game = () => {
 					useBackgroundImage={useBackgroundImage}
 				/>
 				<aside>
-					{gameOver ? (
-						<Display gameOver={gameOver} text="Game Over" />
-					) : (
-						<>
+					{gameOver && <Display gameOver={gameOver} text="Game Over" />}
+					{!gameOver && (
+						<div>
 							<Display text={`Score: ${score}`} />
 							<Display text="Rows" />
 							<Display text="Level" />
-						</>
+						</div>
 					)}
+
 					<StartButton callback={startGame} />
 					<ToggleButton onClick={toggleBackground}>
-						Toggle Background
+						<p>Toggle</p>
+						<p>Background</p>
 					</ToggleButton>
+					<InfoBox>
+						<p>CTRL ↔️ : 양 끝으로</p>
+						<p>SPACE: 수직낙하</p>
+						<p>↑ : 시계방향 회전</p>
+					</InfoBox>
 				</aside>
 			</StyledTetris>
 		</StyledTetrisWrapper>
