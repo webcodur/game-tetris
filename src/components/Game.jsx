@@ -28,6 +28,7 @@ const Game = () => {
 	const [selectedLevel, setSelectedLevel] = useState(0);
 	const [spacePressed, setSpacePressed] = useState(false);
 	const [useBackgroundImage, setUseBackgroundImage] = useState(false);
+	const [loading, setLoading] = useState(true); // 추가된 부분
 
 	const [
 		player,
@@ -189,6 +190,14 @@ const Game = () => {
 	const toggleBackground = () => {
 		setUseBackgroundImage((prev) => !prev);
 	};
+
+	useEffect(() => {
+		setLoading(false); // 페이지 로드 후 로딩 상태 변경
+	}, []);
+
+	if (loading) {
+		return <div>Loading...</div>; // 로딩 상태를 나타내는 컴포넌트
+	}
 
 	return (
 		<StyledTetrisWrapper role="button" tabIndex="0" ref={wrapperRef}>
