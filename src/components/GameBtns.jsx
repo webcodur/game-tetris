@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const StyledStartButton = styled.button`
+const Btn = styled.button`
 	box-sizing: border-box;
 	margin: 0 0 20px 0;
 	padding: 20px;
@@ -16,13 +16,21 @@ const StyledStartButton = styled.button`
 	outline: none;
 	cursor: pointer;
 
+	&:hover {
+		background-color: wheat;
+	}
+
 	&:focus {
 		outline: 3px solid #fff; /* 포커스 스타일 추가 */
 	}
 `;
 
-const StartButton = ({ callback }) => (
-	<StyledStartButton onClick={callback}>Start Game</StyledStartButton>
+const GameBtns = ({ cb1, cb2, cb3 }) => (
+	<>
+		<Btn onClick={cb1}>게임 시작</Btn>
+		<Btn onClick={cb2}>일시 정지</Btn>
+		<Btn onClick={cb3}>타일 배경 토글</Btn>
+	</>
 );
 
-export default StartButton;
+export default GameBtns;

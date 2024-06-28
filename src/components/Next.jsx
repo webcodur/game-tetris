@@ -18,17 +18,17 @@ const StyledNextTitle = styled.h3`
 
 const StyledNext = styled.div`
 	display: grid;
-	grid-template-rows: repeat(${(props) => props.height}, 1fr);
-	grid-template-columns: repeat(${(props) => props.width}, 1fr);
+	grid-template-rows: repeat(${(props) => props.height}, 20px);
+	grid-template-columns: repeat(${(props) => props.width}, 20px);
 	grid-gap: 1px;
 	border: 2px solid #333;
-	width: 100%;
+	/* width: 100%; */
 	max-width: 10vw;
 	background: #111;
 	margin-bottom: 10px;
 `;
 
-const Next = ({ nextTetrominos, useBackgroundImage }) => (
+const Next = ({ nextTetrominos, $useBackgroundImage }) => (
 	<StyledNextWrapper>
 		<StyledNextTitle>Next</StyledNextTitle>
 		{nextTetrominos.map((tetromino, index) => (
@@ -38,7 +38,11 @@ const Next = ({ nextTetrominos, useBackgroundImage }) => (
 				height={tetromino.length}>
 				{tetromino.map((row, y) =>
 					row.map((cell, x) => (
-						<Cell key={x} type={cell} useBackgroundImage={useBackgroundImage} />
+						<Cell
+							key={x}
+							type={cell}
+							$useBackgroundImage={$useBackgroundImage}
+						/>
 					))
 				)}
 			</StyledNext>

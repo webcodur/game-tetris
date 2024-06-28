@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import Stage from './Stage';
 import Display from './Display';
-import StartButton from './StartButton';
+import GameBtns from './GameBtns';
 import { usePlayer } from '../hooks/usePlayer';
 import { useStage } from '../hooks/useStage';
 import { createStage, checkCollision } from '../gameHelpers';
@@ -21,7 +21,8 @@ import {
 	LTop,
 	LBottom,
 	RColumn,
-	CentralMessage, // 추가된 부분
+	StyledSelect,
+	CentralMessage,
 } from './GameStyles';
 import Next from './Next';
 import Hold from './Hold';
@@ -35,7 +36,7 @@ const Game = () => {
 	const [level, setLevel] = useState(0);
 	const [selectedLevel, setSelectedLevel] = useState(0);
 	const [spacePressed, setSpacePressed] = useState(false);
-	const [useBackgroundImage, setUseBackgroundImage] = useState(false);
+	const [$useBackgroundImage, $setuseBackgroundImage] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [keyState, setKeyState] = useState({});
 
@@ -224,7 +225,8 @@ const Game = () => {
 	}, [clearedRows, level]);
 
 	const toggleBackground = () => {
-		setUseBackgroundImage((prev) => !prev);
+		$setuseBackgroundImage((prev) => !prev);
+		wrapperRef.current.focus();
 	};
 
 	useEffect(() => {
@@ -235,6 +237,10 @@ const Game = () => {
 		return <div>Loading...</div>;
 	}
 
+	const pauseGame = () => {
+		alert('개발중');
+	};
+
 	return (
 		<>
 			<StyledTetrisWrapper role="button" tabIndex="0" ref={wrapperRef}>
@@ -243,7 +249,7 @@ const Game = () => {
 						<LTop>
 							<Hold
 								holdTetromino={holdTetromino}
-								useBackgroundImage={useBackgroundImage}
+								$useBackgroundImage={$useBackgroundImage}
 							/>
 						</LTop>
 						<LBottom>
@@ -258,38 +264,40 @@ const Game = () => {
 								<Display text={`Rows: ${rows}`} />
 								<Display text={`Level: ${level}`} />
 							</div>
+
+							<div
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									alignItems: 'center',
+									gap: '5px',
+									fontSize: '20px',
+								}}>
+								<label htmlFor="level-select">레벨 선택: </label>
+								<StyledSelect
+									id="level-select"
+									value={selectedLevel}
+									onChange={(e) => setSelectedLevel(Number(e.target.value))}>
+									{[...Array(10).keys()].map((level) => (
+										<option key={level} value={level}>
+											{level}
+										</option>
+									))}
+								</StyledSelect>
+							</div>
 						</LBottom>
 					</LColumn>
 					<Stage
 						stage={stage}
 						player={player}
-						useBackgroundImage={useBackgroundImage}
+						$useBackgroundImage={$useBackgroundImage}
 					/>
 					<aside>
 						<Next
 							nextTetrominos={nextTetrominos}
-							useBackgroundImage={useBackgroundImage}
+							$useBackgroundImage={$useBackgroundImage}
 						/>
-						<StartButton callback={startGame} />
-
-						<div>
-							<label htmlFor="level-select">Select Level: </label>
-							<select
-								id="level-select"
-								value={selectedLevel}
-								onChange={(e) => setSelectedLevel(Number(e.target.value))}>
-								{[...Array(10).keys()].map((level) => (
-									<option key={level} value={level}>
-										{level}
-									</option>
-								))}
-							</select>
-						</div>
-
-						<ToggleButton onClick={toggleBackground}>
-							<p>Toggle</p>
-							<p>Background</p>
-						</ToggleButton>
+						<GameBtns cb1={startGame} cb2={pauseGame} cb3={toggleBackground} />
 					</aside>
 				</StyledTetris>
 			</StyledTetrisWrapper>

@@ -4,7 +4,7 @@ export const StyledTetrisWrapper = styled.div`
 	width: 100vw;
 	height: 100vh;
 	background: #000;
-	background: wheat;
+
 	background-size: cover;
 	overflow: hidden;
 	display: flex;
@@ -18,7 +18,7 @@ export const StyledTetris = styled.div`
 	padding: 40px;
 	margin: 0 auto;
 	max-width: 1100px;
-	background: brown;
+	/* background: skyblue; */
 
 	aside {
 		width: 100%;
@@ -40,12 +40,10 @@ export const LColumn = styled.div`
 
 export const LTop = styled.div`
 	height: 400px;
-	background-color: green;
 `;
 
 export const LBottom = styled.div`
 	height: 400px;
-	background-color: green;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -73,6 +71,15 @@ export const ToggleButton = styled.button`
 const fadeInOut = keyframes`
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
+`;
+
+export const StyledSelect = styled.select`
+	width: 120px;
+	padding: 10px;
+	border: 5px solid #333;
+	border-radius: 15px;
+	color: lightgray;
+	margin: 0 auto;
 `;
 
 export const CentralMessage = styled.div`
