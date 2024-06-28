@@ -8,6 +8,9 @@ export const usePlayer = () => {
 		tetromino: TETROMINOS[0].shape,
 		collided: false,
 	});
+	const [nextTetrominos, setNextTetrominos] = useState(
+		Array.from({ length: 5 }, () => randomTetromino().shape)
+	);
 
 	const rotate = (matrix, dir) => {
 		const rotatedTetro = matrix.map((_, index) =>
@@ -46,10 +49,11 @@ export const usePlayer = () => {
 	const resetPlayer = useCallback(() => {
 		setPlayer({
 			pos: { x: STAGE_WIDTH / 2 - 2, y: 0 },
-			tetromino: randomTetromino().shape,
+			tetromino: nextTetrominos[0],
 			collided: false,
 		});
-	}, []);
+		setNextTetrominos((prev) => [...prev.slice(1), randomTetromino().shape]);
+	}, [nextTetrominos]);
 
-	return [player, updatePlayerPos, resetPlayer, playerRotate];
+	return [player, updatePlayerPos, resetPlayer, playerRotate, nextTetrominos];
 };

@@ -7,7 +7,16 @@ import { useStage } from '../hooks/useStage';
 import { createStage, checkCollision } from '../gameHelpers';
 import useInterval from '../hooks/useInterval';
 import InfoBox from './InfoBox';
-import { StyledTetrisWrapper, StyledTetris, ToggleButton } from './GameStyles';
+import {
+	StyledTetrisWrapper,
+	StyledTetris,
+	ToggleButton,
+	LColumn,
+	LTop,
+	LBottom,
+	RColumn,
+} from './GameStyles';
+import Next from './Next'; // Next 컴포넌트 임포트
 
 const Game = () => {
 	const [dropTime, setDropTime] = useState(null);
@@ -19,7 +28,8 @@ const Game = () => {
 	const [spacePressed, setSpacePressed] = useState(false);
 	const [useBackgroundImage, setUseBackgroundImage] = useState(false);
 
-	const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
+	const [player, updatePlayerPos, resetPlayer, playerRotate, nextTetrominos] =
+		usePlayer(); // nextTetrominos 추가
 	const [stage, setStage, clearedRows] = useStage(player, resetPlayer);
 
 	const wrapperRef = useRef(null);
@@ -168,20 +178,34 @@ const Game = () => {
 	return (
 		<StyledTetrisWrapper role="button" tabIndex="0" ref={wrapperRef}>
 			<StyledTetris>
+				{/* <LemptyBox /> */}
+				<LColumn>
+					{/* 홀드 컴포넌트 */}
+					<LTop>TEST</LTop>
+
+					{/* 기록들 */}
+					<LBottom>
+						{gameOver && <Display gameOver={gameOver} text="Game Over" />}
+						{!gameOver && (
+							<div>
+								<Display text={`Score: ${score}`} />
+								<Display text={`Rows: ${rows}`} />
+								<Display text={`Level: ${level}`} />
+							</div>
+						)}
+					</LBottom>
+				</LColumn>
+				{/* <LemptyBox /> */}
 				<Stage
 					stage={stage}
 					player={player}
 					useBackgroundImage={useBackgroundImage}
 				/>
 				<aside>
-					{gameOver && <Display gameOver={gameOver} text="Game Over" />}
-					{!gameOver && (
-						<div>
-							<Display text={`Score: ${score}`} />
-							<Display text={`Rows: ${rows}`} />
-							<Display text={`Level: ${level}`} />
-						</div>
-					)}
+					<Next
+						nextTetrominos={nextTetrominos}
+						useBackgroundImage={useBackgroundImage}
+					/>
 					<StartButton callback={startGame} />
 					<div>
 						<label htmlFor="level-select">Select Level: </label>
