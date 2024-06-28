@@ -16,7 +16,8 @@ import {
 	LBottom,
 	RColumn,
 } from './GameStyles';
-import Next from './Next'; // Next 컴포넌트 임포트
+import Next from './Next';
+import Hold from './Hold'; // Hold 컴포넌트 임포트
 
 const Game = () => {
 	const [dropTime, setDropTime] = useState(null);
@@ -28,8 +29,15 @@ const Game = () => {
 	const [spacePressed, setSpacePressed] = useState(false);
 	const [useBackgroundImage, setUseBackgroundImage] = useState(false);
 
-	const [player, updatePlayerPos, resetPlayer, playerRotate, nextTetrominos] =
-		usePlayer(); // nextTetrominos 추가
+	const [
+		player,
+		updatePlayerPos,
+		resetPlayer,
+		playerRotate,
+		nextTetrominos,
+		holdTetromino,
+		swapWithHold,
+	] = usePlayer(); // holdTetromino 및 swapWithHold 추가
 	const [stage, setStage, clearedRows] = useStage(player, resetPlayer);
 
 	const wrapperRef = useRef(null);
@@ -84,6 +92,7 @@ const Game = () => {
 		90: () => playerRotate(stage, -1),
 		65: () => playerRotate(stage, 2),
 		32: () => handleSpacePress(),
+		16: () => handleShiftPress(), // shift key로 블록 교체
 	};
 
 	const move = useCallback(
@@ -121,6 +130,12 @@ const Game = () => {
 			setSpacePressed(true);
 		}
 	}, [player, stage, updatePlayerPos, spacePressed]);
+
+	const handleShiftPress = useCallback(() => {
+		if (!gameOver) {
+			swapWithHold();
+		}
+	}, [gameOver, swapWithHold]);
 
 	const keyUp = useCallback(
 		({ keyCode }) => {
@@ -178,12 +193,13 @@ const Game = () => {
 	return (
 		<StyledTetrisWrapper role="button" tabIndex="0" ref={wrapperRef}>
 			<StyledTetris>
-				{/* <LemptyBox /> */}
 				<LColumn>
-					{/* 홀드 컴포넌트 */}
-					<LTop>TEST</LTop>
-
-					{/* 기록들 */}
+					<LTop>
+						<Hold
+							holdTetromino={holdTetromino}
+							useBackgroundImage={useBackgroundImage}
+						/>
+					</LTop>
 					<LBottom>
 						{gameOver && <Display gameOver={gameOver} text="Game Over" />}
 						{!gameOver && (
@@ -195,7 +211,6 @@ const Game = () => {
 						)}
 					</LBottom>
 				</LColumn>
-				{/* <LemptyBox /> */}
 				<Stage
 					stage={stage}
 					player={player}

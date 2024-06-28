@@ -11,6 +11,8 @@ export const usePlayer = () => {
 	const [nextTetrominos, setNextTetrominos] = useState(
 		Array.from({ length: 5 }, () => randomTetromino().shape)
 	);
+	const [holdTetromino, setHoldTetromino] = useState(null);
+	const [isHoldUsed, setIsHoldUsed] = useState(false);
 
 	const rotate = (matrix, dir) => {
 		const rotatedTetro = matrix.map((_, index) =>
@@ -53,7 +55,34 @@ export const usePlayer = () => {
 			collided: false,
 		});
 		setNextTetrominos((prev) => [...prev.slice(1), randomTetromino().shape]);
+		setIsHoldUsed(false);
 	}, [nextTetrominos]);
 
-	return [player, updatePlayerPos, resetPlayer, playerRotate, nextTetrominos];
+	const swapWithHold = useCallback(() => {
+		if (isHoldUsed) return;
+		if (holdTetromino) {
+			const temp = player.tetromino;
+			setPlayer((prev) => ({
+				...prev,
+				tetromino: holdTetromino,
+				pos: { x: STAGE_WIDTH / 2 - 2, y: 0 },
+				collided: false,
+			}));
+			setHoldTetromino(temp);
+		} else {
+			setHoldTetromino(player.tetromino);
+			resetPlayer();
+		}
+		setIsHoldUsed(true);
+	}, [holdTetromino, player.tetromino, resetPlayer, isHoldUsed]);
+
+	return [
+		player,
+		updatePlayerPos,
+		resetPlayer,
+		playerRotate,
+		nextTetrominos,
+		holdTetromino,
+		swapWithHold,
+	];
 };

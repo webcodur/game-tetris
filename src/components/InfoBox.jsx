@@ -102,6 +102,12 @@ const InfoBox = () => {
 						</td>
 						<td>양 끝으로</td>
 					</tr>
+
+					{/*  */}
+					<tr>
+						<td>SHIFT</td>
+						<td>보관함 이동</td>
+					</tr>
 				</tbody>
 			</table>
 		</InfoBoxStyle>
