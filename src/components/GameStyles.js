@@ -7,6 +7,9 @@ export const StyledTetrisWrapper = styled.div`
 	background: wheat;
 	background-size: cover;
 	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `;
 
 export const StyledTetris = styled.div`
@@ -43,6 +46,10 @@ export const LTop = styled.div`
 export const LBottom = styled.div`
 	height: 400px;
 	background-color: green;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 `;
 
 export const RColumn = styled.div``;
@@ -61,4 +68,17 @@ export const ToggleButton = styled.button`
 	font-size: 1rem;
 	outline: none;
 	cursor: pointer;
+`;
+
+export const CentralMessage = styled.div`
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-family: Pixel, Arial, Helvetica, sans-serif;
+	color: #fff;
+	font-size: 2rem;
+	background: rgba(0, 0, 0, 0.8);
+	padding: 20px;
+	border-radius: 10px;
 `;

@@ -21,6 +21,7 @@ import {
 	LTop,
 	LBottom,
 	RColumn,
+	CentralMessage, // 추가된 부분
 } from './GameStyles';
 import Next from './Next';
 import Hold from './Hold';
@@ -28,6 +29,7 @@ import Hold from './Hold';
 const Game = () => {
 	const [dropTime, setDropTime] = useState(null);
 	const [gameOver, setGameOver] = useState(false);
+	const [gameStart, setGameStart] = useState(false); // 추가된 부분
 	const [score, setScore] = useState(0);
 	const [rows, setRows] = useState(0);
 	const [level, setLevel] = useState(0);
@@ -64,6 +66,8 @@ const Game = () => {
 		setDropTime(1000 / (selectedLevel + 1) + 200);
 		resetPlayer();
 		setGameOver(false);
+		setGameStart(true); // 게임 시작 설정
+		setTimeout(() => setGameStart(false), 2000); // 2초 후 게임 시작 메시지 제거
 		setScore(0);
 		setRows(0);
 		setLevel(selectedLevel);
@@ -187,7 +191,7 @@ const Game = () => {
 			} else if (keyState[40]) {
 				dropPlayer();
 			}
-		}, 50);
+		}, 110);
 		return () => clearInterval(interval);
 	}, [keyState, dropPlayer, movePlayer, drop]);
 
@@ -242,14 +246,14 @@ const Game = () => {
 						/>
 					</LTop>
 					<LBottom>
-						{gameOver && <Display gameOver={gameOver} text="Game Over" />}
-						{!gameOver && (
-							<div>
-								<Display text={`Score: ${score}`} />
-								<Display text={`Rows: ${rows}`} />
-								<Display text={`Level: ${level}`} />
-							</div>
-						)}
+						{gameOver && <CentralMessage>Game Over</CentralMessage>}
+						{gameStart && <CentralMessage>Game Start</CentralMessage>}
+
+						<div>
+							<Display text={`Score: ${score}`} />
+							<Display text={`Rows: ${rows}`} />
+							<Display text={`Level: ${level}`} />
+						</div>
 					</LBottom>
 				</LColumn>
 				<Stage
