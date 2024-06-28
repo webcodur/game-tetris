@@ -15,7 +15,7 @@ const Game = () => {
 	const [score, setScore] = useState(0);
 	const [rows, setRows] = useState(0);
 	const [level, setLevel] = useState(0);
-	const [selectedLevel, setSelectedLevel] = useState(0); // 추가된 부분
+	const [selectedLevel, setSelectedLevel] = useState(0);
 	const [spacePressed, setSpacePressed] = useState(false);
 	const [useBackgroundImage, setUseBackgroundImage] = useState(false);
 
@@ -36,12 +36,12 @@ const Game = () => {
 	const startGame = () => {
 		console.log('Game started');
 		setStage(createStage());
-		setDropTime(1000 / (selectedLevel + 1) + 200); // 선택된 레벨에 따른 낙하 속도 설정
+		setDropTime(1000 / (selectedLevel + 1) + 200);
 		resetPlayer();
 		setGameOver(false);
 		setScore(0);
 		setRows(0);
-		setLevel(selectedLevel); // 선택된 레벨로 설정
+		setLevel(selectedLevel);
 		setSpacePressed(false);
 		wrapperRef.current.focus();
 	};
@@ -148,15 +148,17 @@ const Game = () => {
 	}, dropTime);
 
 	useEffect(() => {
-		const calcScore = (rowsCleared) => {
-			const linePoints = [40, 100, 300, 1200];
-			if (rowsCleared > 0) {
-				setScore((prev) => prev + linePoints[rowsCleared - 1] * (level + 1));
-				setRows((prev) => prev + rowsCleared);
-			}
-		};
+		if (clearedRows > 0) {
+			const calcScore = (rowsCleared) => {
+				const linePoints = [40, 100, 300, 1200];
+				if (rowsCleared > 0) {
+					setScore((prev) => prev + linePoints[rowsCleared - 1] * (level + 1));
+					setRows((prev) => prev + rowsCleared);
+				}
+			};
 
-		calcScore(clearedRows);
+			calcScore(clearedRows);
+		}
 	}, [clearedRows, level]);
 
 	const toggleBackground = () => {
