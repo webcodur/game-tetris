@@ -11,14 +11,14 @@ const StyledDisplay = styled.div`
 	min-height: 30px;
 	width: 100%;
 	border-radius: 20px;
-	color: ${(props) => (props.gameOver ? 'red' : '#999')};
+	color: ${(props) => (props.$gameOver ? 'red' : '#999')}; // 수정된 부분
 	background: #000;
 	font-family: Pixel, Arial, Helvetica, sans-serif;
 	font-size: 0.8rem;
 `;
 
 const Display = ({ gameOver, text }) => (
-	<StyledDisplay gameOver={gameOver}>{text}</StyledDisplay>
+	<StyledDisplay $gameOver={gameOver}>{text}</StyledDisplay> // 수정된 부분
 );
 
 export default Display;

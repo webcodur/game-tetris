@@ -7,12 +7,12 @@ const StyledCell = styled.div`
 	width: auto;
 	background: ${(props) =>
 		props.type === 0
-			? 'rgba(0, 0, 0, 0.8)' // 배경 색상
-			: props.useBackgroundImage
-			? `url(${cellBackground}), rgba(${props.color}, 0.8)` // 배경 이미지와 색상
-			: `rgba(${props.color}, 0.8)`}; // 색상만
-	background-blend-mode: overlay; // 이미지와 색상 오버레이
-	background-size: cover; // 배경 이미지 크기 조정
+			? 'rgba(0, 0, 0, 0.8)'
+			: props.$useBackgroundImage // 수정된 부분
+			? `url(${cellBackground}), rgba(${props.color}, 0.8)`
+			: `rgba(${props.color}, 0.8)`};
+	background-blend-mode: overlay;
+	background-size: cover;
 	border: ${(props) => (props.type === 0 ? '0px solid' : '4px solid')};
 	border-bottom-color: rgba(${(props) => props.color}, 0.1);
 	border-right-color: rgba(${(props) => props.color}, 1);
@@ -24,7 +24,7 @@ const Cell = ({ type, useBackgroundImage }) => (
 	<StyledCell
 		type={type}
 		color={TETROMINOS[type].color}
-		useBackgroundImage={useBackgroundImage}
+		$useBackgroundImage={useBackgroundImage} // 수정된 부분
 	/>
 );
 
