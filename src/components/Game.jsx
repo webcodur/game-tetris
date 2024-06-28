@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, {
+	useState,
+	useEffect,
+	useCallback,
+	useRef,
+	useMemo,
+} from 'react';
 import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
@@ -28,7 +34,8 @@ const Game = () => {
 	const [selectedLevel, setSelectedLevel] = useState(0);
 	const [spacePressed, setSpacePressed] = useState(false);
 	const [useBackgroundImage, setUseBackgroundImage] = useState(false);
-	const [loading, setLoading] = useState(true); // 추가된 부분
+	const [loading, setLoading] = useState(true);
+	const [keyState, setKeyState] = useState({});
 
 	const [
 		player,
@@ -53,7 +60,6 @@ const Game = () => {
 	);
 
 	const startGame = () => {
-		console.log('Game started');
 		setStage(createStage());
 		setDropTime(1000 / (selectedLevel + 1) + 200);
 		resetPlayer();
@@ -70,7 +76,6 @@ const Game = () => {
 			updatePlayerPos({ x: 0, y: 1, collided: false });
 		} else {
 			if (player.pos.y < 1) {
-				console.log('GAME OVER!!!');
 				setGameOver(true);
 				setDropTime(null);
 			} else {
@@ -84,40 +89,22 @@ const Game = () => {
 		drop();
 	}, [drop]);
 
-	const moveActions = {
-		37: (ctrlKey) => (ctrlKey ? movePlayerToEdge('left') : movePlayer(-1)),
-		39: (ctrlKey) => (ctrlKey ? movePlayerToEdge('right') : movePlayer(1)),
-		40: () => dropPlayer(),
-		38: () => playerRotate(stage, 1),
-		88: () => playerRotate(stage, 1),
-		90: () => playerRotate(stage, -1),
-		65: () => playerRotate(stage, 2),
-		32: () => handleSpacePress(),
-		16: () => handleShiftPress(),
-	};
-
-	const move = useCallback(
-		({ keyCode, ctrlKey }) => {
-			if (!gameOver && moveActions[keyCode]) {
-				moveActions[keyCode](ctrlKey);
+	const movePlayerToEdge = useCallback(
+		(direction) => {
+			let moveX = 0;
+			if (direction === 'left') {
+				while (!checkCollision(player, stage, { x: moveX - 1, y: 0 })) {
+					moveX -= 1;
+				}
+			} else if (direction === 'right') {
+				while (!checkCollision(player, stage, { x: moveX + 1, y: 0 })) {
+					moveX += 1;
+				}
 			}
+			updatePlayerPos({ x: moveX, y: 0 });
 		},
-		[gameOver, movePlayer, dropPlayer, playerRotate, stage, spacePressed]
+		[player, stage, updatePlayerPos]
 	);
-
-	const movePlayerToEdge = (direction) => {
-		let moveX = 0;
-		if (direction === 'left') {
-			while (!checkCollision(player, stage, { x: moveX - 1, y: 0 })) {
-				moveX -= 1;
-			}
-		} else if (direction === 'right') {
-			while (!checkCollision(player, stage, { x: moveX + 1, y: 0 })) {
-				moveX += 1;
-			}
-		}
-		updatePlayerPos({ x: moveX, y: 0 });
-	};
 
 	const handleSpacePress = useCallback(() => {
 		if (!spacePressed) {
@@ -138,12 +125,46 @@ const Game = () => {
 		}
 	}, [gameOver, swapWithHold]);
 
-	const keyUp = useCallback(
-		({ keyCode }) => {
+	const moveActions = useMemo(
+		() => ({
+			37: (ctrlKey) => (ctrlKey ? movePlayerToEdge('left') : movePlayer(-1)),
+			39: (ctrlKey) => (ctrlKey ? movePlayerToEdge('right') : movePlayer(1)),
+			40: () => dropPlayer(),
+			38: () => playerRotate(stage, 1),
+			88: () => playerRotate(stage, 1),
+			90: () => playerRotate(stage, -1),
+			65: () => playerRotate(stage, 2),
+			32: () => handleSpacePress(),
+			16: () => handleShiftPress(),
+		}),
+		[
+			movePlayer,
+			dropPlayer,
+			playerRotate,
+			stage,
+			handleSpacePress,
+			handleShiftPress,
+			movePlayerToEdge,
+		]
+	);
+
+	const handleKeyDown = useCallback(
+		(event) => {
+			setKeyState((prev) => ({ ...prev, [event.keyCode]: true }));
+			if (!gameOver && moveActions[event.keyCode]) {
+				moveActions[event.keyCode](event.ctrlKey);
+			}
+		},
+		[gameOver, moveActions]
+	);
+
+	const handleKeyUp = useCallback(
+		(event) => {
+			setKeyState((prev) => ({ ...prev, [event.keyCode]: false }));
 			if (!gameOver) {
-				if (keyCode === 40) {
+				if (event.keyCode === 40) {
 					setDropTime(1000 / (level + 1) + 200);
-				} else if (keyCode === 32) {
+				} else if (event.keyCode === 32) {
 					setSpacePressed(false);
 				}
 			}
@@ -152,14 +173,25 @@ const Game = () => {
 	);
 
 	useEffect(() => {
-		const handleKeyDown = (event) => {
-			move(event);
-		};
+		const interval = setInterval(() => {
+			if (keyState[37] && keyState[40]) {
+				movePlayer(-1);
+				drop();
+			} else if (keyState[39] && keyState[40]) {
+				movePlayer(1);
+				drop();
+			} else if (keyState[37]) {
+				movePlayer(-1);
+			} else if (keyState[39]) {
+				movePlayer(1);
+			} else if (keyState[40]) {
+				dropPlayer();
+			}
+		}, 50);
+		return () => clearInterval(interval);
+	}, [keyState, dropPlayer, movePlayer, drop]);
 
-		const handleKeyUp = (event) => {
-			keyUp(event);
-		};
-
+	useEffect(() => {
 		window.addEventListener('keydown', handleKeyDown);
 		window.addEventListener('keyup', handleKeyUp);
 
@@ -167,7 +199,7 @@ const Game = () => {
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('keyup', handleKeyUp);
 		};
-	}, [move, keyUp]);
+	}, [handleKeyDown, handleKeyUp]);
 
 	useInterval(() => {
 		drop();
@@ -192,11 +224,11 @@ const Game = () => {
 	};
 
 	useEffect(() => {
-		setLoading(false); // 페이지 로드 후 로딩 상태 변경
+		setLoading(false);
 	}, []);
 
 	if (loading) {
-		return <div>Loading...</div>; // 로딩 상태를 나타내는 컴포넌트
+		return <div>Loading...</div>;
 	}
 
 	return (
