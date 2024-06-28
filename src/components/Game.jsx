@@ -63,7 +63,7 @@ const Game = () => {
 
 	const startGame = () => {
 		setStage(createStage());
-		setDropTime(1000 / (selectedLevel + 1) + 200);
+		setDropTime(1000 / ((selectedLevel + 1) * 3) + 200);
 		resetPlayer();
 		setGameOver(false);
 		setGameStart(true); // 게임 시작 설정
@@ -236,61 +236,65 @@ const Game = () => {
 	}
 
 	return (
-		<StyledTetrisWrapper role="button" tabIndex="0" ref={wrapperRef}>
-			<StyledTetris>
-				<LColumn>
-					<LTop>
-						<Hold
-							holdTetromino={holdTetromino}
-							useBackgroundImage={useBackgroundImage}
-						/>
-					</LTop>
-					<LBottom>
-						{gameOver && (
-							<CentralMessage key="gameOver">Game Over</CentralMessage>
-						)}
-						{gameStart && (
-							<CentralMessage key="gameStart">Game Start</CentralMessage>
-						)}
-						<div>
-							<Display text={`Score: ${score}`} />
-							<Display text={`Rows: ${rows}`} />
-							<Display text={`Level: ${level}`} />
-						</div>
-					</LBottom>
-				</LColumn>
-				<Stage
-					stage={stage}
-					player={player}
-					useBackgroundImage={useBackgroundImage}
-				/>
-				<aside>
-					<Next
-						nextTetrominos={nextTetrominos}
+		<>
+			<StyledTetrisWrapper role="button" tabIndex="0" ref={wrapperRef}>
+				<StyledTetris>
+					<LColumn>
+						<LTop>
+							<Hold
+								holdTetromino={holdTetromino}
+								useBackgroundImage={useBackgroundImage}
+							/>
+						</LTop>
+						<LBottom>
+							{gameOver && (
+								<CentralMessage key="gameOver">Game Over</CentralMessage>
+							)}
+							{gameStart && (
+								<CentralMessage key="gameStart">Game Start</CentralMessage>
+							)}
+							<div>
+								<Display text={`Score: ${score}`} />
+								<Display text={`Rows: ${rows}`} />
+								<Display text={`Level: ${level}`} />
+							</div>
+						</LBottom>
+					</LColumn>
+					<Stage
+						stage={stage}
+						player={player}
 						useBackgroundImage={useBackgroundImage}
 					/>
-					<StartButton callback={startGame} />
-					<div>
-						<label htmlFor="level-select">Select Level: </label>
-						<select
-							id="level-select"
-							value={selectedLevel}
-							onChange={(e) => setSelectedLevel(Number(e.target.value))}>
-							{[...Array(10).keys()].map((level) => (
-								<option key={level} value={level}>
-									{level}
-								</option>
-							))}
-						</select>
-					</div>
-					<ToggleButton onClick={toggleBackground}>
-						<p>Toggle</p>
-						<p>Background</p>
-					</ToggleButton>
-					<InfoBox />
-				</aside>
-			</StyledTetris>
-		</StyledTetrisWrapper>
+					<aside>
+						<Next
+							nextTetrominos={nextTetrominos}
+							useBackgroundImage={useBackgroundImage}
+						/>
+						<StartButton callback={startGame} />
+
+						<div>
+							<label htmlFor="level-select">Select Level: </label>
+							<select
+								id="level-select"
+								value={selectedLevel}
+								onChange={(e) => setSelectedLevel(Number(e.target.value))}>
+								{[...Array(10).keys()].map((level) => (
+									<option key={level} value={level}>
+										{level}
+									</option>
+								))}
+							</select>
+						</div>
+
+						<ToggleButton onClick={toggleBackground}>
+							<p>Toggle</p>
+							<p>Background</p>
+						</ToggleButton>
+					</aside>
+				</StyledTetris>
+			</StyledTetrisWrapper>
+			<InfoBox />
+		</>
 	);
 };
 
