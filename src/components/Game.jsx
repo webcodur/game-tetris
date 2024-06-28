@@ -28,9 +28,11 @@ import Next from './Next';
 import Hold from './Hold';
 
 const Game = () => {
+	const [gameStatus, setGameStatus] = useState('Hello');
+	const [gamePhrase, setGamePhrase] = useState('Hello');
+
 	const [dropTime, setDropTime] = useState(null);
-	const [gameOver, setGameOver] = useState(false);
-	const [gameStart, setGameStart] = useState(false); // 추가된 부분
+
 	const [score, setScore] = useState(0);
 	const [rows, setRows] = useState(0);
 	const [level, setLevel] = useState(0);
@@ -48,6 +50,7 @@ const Game = () => {
 		nextTetrominos,
 		holdTetromino,
 		swapWithHold,
+		setHoldTetromino,
 	] = usePlayer();
 	const [stage, setStage, clearedRows] = useStage(player, resetPlayer);
 
@@ -66,14 +69,14 @@ const Game = () => {
 		setStage(createStage());
 		setDropTime(1000 / ((selectedLevel + 1) * 3) + 200);
 		resetPlayer();
-		setGameOver(false);
-		setGameStart(true); // 게임 시작 설정
-		setTimeout(() => setGameStart(false), 2000); // 2초 후 게임 시작 메시지 제거
+		setGameStatus(() => 'running');
+		setGamePhrase(() => 'game start');
 		setScore(0);
 		setRows(0);
 		setLevel(selectedLevel);
 		setSpacePressed(false);
 		wrapperRef.current.focus();
+		setHoldTetromino(null);
 	};
 
 	const drop = useCallback(() => {
@@ -81,7 +84,8 @@ const Game = () => {
 			updatePlayerPos({ x: 0, y: 1, collided: false });
 		} else {
 			if (player.pos.y < 1) {
-				setGameOver(true);
+				setGameStatus(() => 'game over');
+				setGamePhrase(() => 'game over');
 				setDropTime(null);
 			} else {
 				updatePlayerPos({ x: 0, y: 0, collided: true });
@@ -124,11 +128,9 @@ const Game = () => {
 		}
 	}, [player, stage, updatePlayerPos, spacePressed]);
 
-	const handleShiftPress = useCallback(() => {
-		if (!gameOver) {
-			swapWithHold();
-		}
-	}, [gameOver, swapWithHold]);
+	const handleRestoreBlocks = useCallback(() => {
+		if (gameStatus === 'running') swapWithHold();
+	}, [gameStatus, swapWithHold]);
 
 	const moveActions = useMemo(
 		() => ({
@@ -140,7 +142,7 @@ const Game = () => {
 			90: () => playerRotate(stage, -1),
 			65: () => playerRotate(stage, 2),
 			32: () => handleSpacePress(),
-			16: () => handleShiftPress(),
+			67: () => handleRestoreBlocks(),
 		}),
 		[
 			movePlayer,
@@ -148,7 +150,7 @@ const Game = () => {
 			playerRotate,
 			stage,
 			handleSpacePress,
-			handleShiftPress,
+			handleRestoreBlocks,
 			movePlayerToEdge,
 		]
 	);
@@ -156,17 +158,17 @@ const Game = () => {
 	const handleKeyDown = useCallback(
 		(event) => {
 			setKeyState((prev) => ({ ...prev, [event.keyCode]: true }));
-			if (!gameOver && moveActions[event.keyCode]) {
+			if (gameStatus === 'running' && moveActions[event.keyCode]) {
 				moveActions[event.keyCode](event.ctrlKey);
 			}
 		},
-		[gameOver, moveActions]
+		[gameStatus, moveActions]
 	);
 
 	const handleKeyUp = useCallback(
 		(event) => {
 			setKeyState((prev) => ({ ...prev, [event.keyCode]: false }));
-			if (!gameOver) {
+			if (gameStatus === 'running') {
 				if (event.keyCode === 40) {
 					setDropTime(1000 / (level + 1) + 200);
 				} else if (event.keyCode === 32) {
@@ -174,7 +176,7 @@ const Game = () => {
 				}
 			}
 		},
-		[gameOver, level]
+		[gameStatus, level]
 	);
 
 	useEffect(() => {
@@ -206,9 +208,13 @@ const Game = () => {
 		};
 	}, [handleKeyDown, handleKeyUp]);
 
-	useInterval(() => {
-		drop();
-	}, dropTime);
+	useInterval(
+		() => {
+			drop();
+		},
+		dropTime,
+		gameStatus
+	);
 
 	useEffect(() => {
 		if (clearedRows > 0) {
@@ -237,12 +243,24 @@ const Game = () => {
 		return <div>Loading...</div>;
 	}
 
-	const pauseGame = () => {
-		alert('개발중');
+	const pauseGameBtnClicked = () => {
+		if (gameStatus !== 'running' && gameStatus !== 'paused') return; // 블락 사운드 내지 리턴
+		if (gameStatus === 'paused') wrapperRef.current.focus(); // 포커스 이동
+
+		if (gameStatus === 'running') setGameStatus('paused');
+		if (gameStatus === 'paused') setGameStatus('running');
+
+		if (gameStatus === 'paused') setGamePhrase('running');
+		if (gameStatus === 'running') setGamePhrase('paused');
 	};
 
 	return (
 		<>
+			{/* 중앙 메시지 */}
+			{gamePhrase !== 'running' && (
+				<CentralMessage key={gamePhrase}>{gamePhrase}</CentralMessage>
+			)}
+
 			<StyledTetrisWrapper role="button" tabIndex="0" ref={wrapperRef}>
 				<StyledTetris>
 					<LColumn>
@@ -253,12 +271,7 @@ const Game = () => {
 							/>
 						</LTop>
 						<LBottom>
-							{gameOver && (
-								<CentralMessage key="gameOver">Game Over</CentralMessage>
-							)}
-							{gameStart && (
-								<CentralMessage key="gameStart">Game Start</CentralMessage>
-							)}
+							{/* 점수박스 */}
 							<div>
 								<Display text={`Score: ${score}`} />
 								<Display text={`Rows: ${rows}`} />
@@ -297,7 +310,12 @@ const Game = () => {
 							nextTetrominos={nextTetrominos}
 							$useBackgroundImage={$useBackgroundImage}
 						/>
-						<GameBtns cb1={startGame} cb2={pauseGame} cb3={toggleBackground} />
+						<GameBtns
+							gameStatus={gameStatus}
+							cb1={startGame}
+							cb2={pauseGameBtnClicked}
+							cb3={toggleBackground}
+						/>
 					</aside>
 				</StyledTetris>
 			</StyledTetrisWrapper>

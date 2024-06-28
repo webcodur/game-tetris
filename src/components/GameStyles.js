@@ -17,8 +17,8 @@ export const StyledTetris = styled.div`
 	align-items: flex-start;
 	padding: 40px;
 	margin: 0 auto;
-	max-width: 1100px;
-	/* background: skyblue; */
+	width: 1300px;
+	background: black;
 
 	aside {
 		width: 100%;
@@ -68,11 +68,6 @@ export const ToggleButton = styled.button`
 	cursor: pointer;
 `;
 
-const fadeInOut = keyframes`
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
-`;
-
 export const StyledSelect = styled.select`
 	width: 120px;
 	padding: 10px;
@@ -80,6 +75,12 @@ export const StyledSelect = styled.select`
 	border-radius: 15px;
 	color: lightgray;
 	margin: 0 auto;
+`;
+
+const fadeInOut = keyframes`
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 `;
 
 export const CentralMessage = styled.div`
@@ -93,5 +94,5 @@ export const CentralMessage = styled.div`
 	background: rgba(0, 0, 0, 0.8);
 	padding: 20px;
 	border-radius: 10px;
-	animation: ${fadeInOut} 2s linear;
+	animation: ${fadeInOut} 2s linear forwards;
 `;

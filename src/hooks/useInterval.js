@@ -1,22 +1,23 @@
 import { useEffect, useRef } from 'react';
 
-const useInterval = (callback, delay) => {
+const useInterval = (cbFuncDrop, delay, gameStatus) => {
 	const savedCallback = useRef();
 
 	useEffect(() => {
-		savedCallback.current = callback;
-	}, [callback]);
+		savedCallback.current = cbFuncDrop;
+	}, [cbFuncDrop]);
 
 	useEffect(() => {
 		function tick() {
 			savedCallback.current();
 		}
 
-		if (delay !== null) {
+		// 일시정지 상태가 아닐 때만 실행
+		if (delay !== null && gameStatus !== 'paused') {
 			const id = setInterval(tick, delay);
 			return () => clearInterval(id);
 		}
-	}, [delay]);
+	}, [delay, gameStatus]);
 };
 
 export default useInterval;

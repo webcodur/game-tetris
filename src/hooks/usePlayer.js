@@ -84,5 +84,6 @@ export const usePlayer = () => {
 		nextTetrominos,
 		holdTetromino,
 		swapWithHold,
+		setHoldTetromino,
 	];
 };

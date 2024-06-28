@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useEffect } from 'react';
 
 const Btn = styled.button`
 	box-sizing: border-box;
@@ -18,19 +19,27 @@ const Btn = styled.button`
 
 	&:hover {
 		background-color: wheat;
+		color: black;
+		font-weight: bold;
 	}
 
 	&:focus {
-		outline: 3px solid #fff; /* 포커스 스타일 추가 */
+		outline: 3px solid #fff;
 	}
 `;
 
-const GameBtns = ({ cb1, cb2, cb3 }) => (
-	<>
-		<Btn onClick={cb1}>게임 시작</Btn>
-		<Btn onClick={cb2}>일시 정지</Btn>
-		<Btn onClick={cb3}>타일 배경 토글</Btn>
-	</>
-);
+const GameBtns = ({ gameStatus, cb1, cb2, cb3 }) => {
+	return (
+		<>
+			<Btn onClick={cb1}>게임 시작</Btn>
+			<Btn onClick={cb2}>
+				{gameStatus === 'paused' ? '게임 재개' : '일시 정지'}
+			</Btn>
+			<Btn onClick={cb3}>타일 배경 토글</Btn>
+		</>
+	);
+};
 
 export default GameBtns;
+
+// gameStatus
