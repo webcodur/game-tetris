@@ -52,7 +52,10 @@ const Game = () => {
 		swapWithHold,
 		setHoldTetromino,
 	] = usePlayer();
-	const [stage, setStage, clearedRows] = useStage(player, resetPlayer);
+	const [stage, setStage, clearedRows, setClearedRows] = useStage(
+		player,
+		resetPlayer
+	);
 
 	const wrapperRef = useRef(null);
 
@@ -225,10 +228,10 @@ const Game = () => {
 					setRows((prev) => prev + rowsCleared);
 				}
 			};
-
 			calcScore(clearedRows);
+			setClearedRows(0);
 		}
-	}, [clearedRows, level]);
+	}, [clearedRows, level, setClearedRows]);
 
 	const toggleBackground = () => {
 		$setuseBackgroundImage((prev) => !prev);

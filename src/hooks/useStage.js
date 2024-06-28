@@ -41,21 +41,15 @@ export const useStage = (player, resetPlayer) => {
 					}
 				});
 			});
-
 			if (player.collided) {
 				resetPlayer();
 				return sweepRows(newStage);
 			}
-
 			return newStage;
 		};
 
 		setStage((prev) => updateStage(prev));
 	}, [player, resetPlayer]);
 
-	useEffect(() => {
-		setClearedRows(0);
-	}, [player.pos.y]);
-
-	return [stage, setStage, clearedRows];
+	return [stage, setStage, clearedRows, setClearedRows];
 };

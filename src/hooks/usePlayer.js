@@ -15,11 +15,23 @@ export const usePlayer = () => {
 	const [isHoldUsed, setIsHoldUsed] = useState(false);
 
 	const rotate = (matrix, dir) => {
-		const rotatedTetro = matrix.map((_, index) =>
-			matrix.map((col) => col[index])
-		);
-		if (dir > 0) return rotatedTetro.map((row) => row.reverse());
-		return rotatedTetro.reverse();
+		// 90도 회전 함수
+		const rotate90 = (matrix) =>
+			matrix
+				.map((_, index) => matrix.map((col) => col[index]))
+				.map((row) => row.reverse());
+
+		if (dir === 2) {
+			// 180도 회전
+			return rotate90(rotate90(matrix));
+		} else if (dir === -2) {
+			// -180도 회전도 같은 방식으로 처리
+			return rotate90(rotate90(matrix));
+		} else {
+			// 90도 또는 -90도 회전
+			const rotatedTetro = rotate90(matrix);
+			return dir > 0 ? rotatedTetro : rotatedTetro.reverse();
+		}
 	};
 
 	const playerRotate = (stage, dir) => {
