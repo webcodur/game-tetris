@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import styled from 'styled-components';
 import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
@@ -8,64 +7,8 @@ import { useStage } from '../hooks/useStage';
 import { createStage, checkCollision } from '../gameHelpers';
 import {} from '../gameHelpers';
 import useInterval from '../hooks/useInterval';
-
-const StyledTetrisWrapper = styled.div`
-	width: 100vw;
-	height: 100vh;
-	background: black;
-`;
-
-const StyledTetris = styled.div`
-	display: flex;
-	align-items: flex-start;
-	padding: 40px;
-	margin: 0 auto;
-	max-width: 900px;
-
-	aside {
-		width: 100%;
-		max-width: 200px;
-		display: block;
-		padding: 0 20px;
-	}
-`;
-
-const ToggleButton = styled.button`
-	box-sizing: border-box;
-	margin: 0 0 20px 0;
-	padding: 5px;
-	min-height: 30px;
-	width: 200px;
-	border-radius: 20px;
-	border: none;
-	color: white;
-	background: #333;
-	font-family: Pixel, Arial, Helvetica, sans-serif;
-	font-size: 1rem;
-	outline: none;
-	cursor: pointer;
-
-	&:focus {
-		outline: 3px solid #fff;
-	}
-`;
-
-const InfoBox = styled.div`
-	background: #333;
-	color: white;
-	border-radius: 20px;
-	width: 200px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	gap: 10px;
-	padding: 15px;
-	p {
-		margin: 0;
-		padding: 0;
-	}
-`;
+import InfoBox from './InfoBox';
+import { StyledTetrisWrapper, StyledTetris, ToggleButton } from './GameStyles';
 
 const Game = () => {
 	const [dropTime, setDropTime] = useState(null);
@@ -118,20 +61,21 @@ const Game = () => {
 		drop();
 	}, [drop]);
 
+	const moveActions = {
+		37: (ctrlKey) => (ctrlKey ? movePlayerToEdge('left') : movePlayer(-1)), // 왼쪽 방향키
+		39: (ctrlKey) => (ctrlKey ? movePlayerToEdge('right') : movePlayer(1)), // 오른쪽 방향키
+		40: () => dropPlayer(), // 아래 방향키
+		38: () => playerRotate(stage, 1), // 위 방향키 (시계 방향 회전)
+		88: () => playerRotate(stage, 1), // X 키 (시계 방향 회전)
+		90: () => playerRotate(stage, -1), // Z 키 (반시계 방향 회전)
+		65: () => playerRotate(stage, 2), // A 키 (180도 회전)
+		32: () => handleSpacePress(), // 스페이스바
+	};
+
 	const move = useCallback(
 		({ keyCode, ctrlKey }) => {
-			if (!gameOver) {
-				if (keyCode === 37) {
-					ctrlKey ? movePlayerToEdge('left') : movePlayer(-1); // ctrl + 왼쪽 방향키
-				} else if (keyCode === 39) {
-					ctrlKey ? movePlayerToEdge('right') : movePlayer(1); // ctrl + 오른쪽 방향키
-				} else if (keyCode === 40) {
-					dropPlayer();
-				} else if (keyCode === 38) {
-					playerRotate(stage, 1);
-				} else if (keyCode === 32) {
-					handleSpacePress();
-				}
+			if (!gameOver && moveActions[keyCode]) {
+				moveActions[keyCode](ctrlKey);
 			}
 		},
 		[gameOver, movePlayer, dropPlayer, playerRotate, stage, spacePressed]
@@ -231,11 +175,7 @@ const Game = () => {
 						<p>Toggle</p>
 						<p>Background</p>
 					</ToggleButton>
-					<InfoBox>
-						<p>CTRL ↔️ : 양 끝으로</p>
-						<p>SPACE: 수직낙하</p>
-						<p>↑ : 시계방향 회전</p>
-					</InfoBox>
+					<InfoBox />
 				</aside>
 			</StyledTetris>
 		</StyledTetrisWrapper>
