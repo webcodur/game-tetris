@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
+import { calculateDropPosition } from '../gameHelpers';
 
 const StyledStage = styled.div`
 	display: grid;
@@ -16,14 +17,31 @@ const StyledStage = styled.div`
 	background: #111;
 `;
 
-const Stage = ({ stage, useBackgroundImage }) => (
-	<StyledStage width={stage[0].length} height={stage.length}>
-		{stage.map((row, y) =>
-			row.map((cell, x) => (
-				<Cell key={x} type={cell[0]} useBackgroundImage={useBackgroundImage} />
-			))
-		)}
-	</StyledStage>
-);
+const Stage = ({ stage, player, useBackgroundImage }) => {
+	const dropPosition = calculateDropPosition(player, stage);
+
+	return (
+		<StyledStage width={stage[0].length} height={stage.length}>
+			{stage.map((row, y) =>
+				row.map((cell, x) => {
+					const isSilhouette =
+						dropPosition.y <= y &&
+						y < dropPosition.y + player.tetromino.length &&
+						dropPosition.x <= x &&
+						x < dropPosition.x + player.tetromino[0].length &&
+						player.tetromino[y - dropPosition.y][x - dropPosition.x] !== 0;
+					return (
+						<Cell
+							key={x}
+							type={cell[0]}
+							useBackgroundImage={useBackgroundImage}
+							isSilhouette={isSilhouette} // 실루엣 여부 전달
+						/>
+					);
+				})
+			)}
+		</StyledStage>
+	);
+};
 
 export default Stage;

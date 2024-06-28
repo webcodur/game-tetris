@@ -17,7 +17,7 @@ import {
 	RColumn,
 } from './GameStyles';
 import Next from './Next';
-import Hold from './Hold'; // Hold 컴포넌트 임포트
+import Hold from './Hold';
 
 const Game = () => {
 	const [dropTime, setDropTime] = useState(null);
@@ -37,7 +37,7 @@ const Game = () => {
 		nextTetrominos,
 		holdTetromino,
 		swapWithHold,
-	] = usePlayer(); // holdTetromino 및 swapWithHold 추가
+	] = usePlayer();
 	const [stage, setStage, clearedRows] = useStage(player, resetPlayer);
 
 	const wrapperRef = useRef(null);
@@ -92,7 +92,7 @@ const Game = () => {
 		90: () => playerRotate(stage, -1),
 		65: () => playerRotate(stage, 2),
 		32: () => handleSpacePress(),
-		16: () => handleShiftPress(), // shift key로 블록 교체
+		16: () => handleShiftPress(),
 	};
 
 	const move = useCallback(
