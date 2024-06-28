@@ -246,9 +246,12 @@ const Game = () => {
 						/>
 					</LTop>
 					<LBottom>
-						{gameOver && <CentralMessage>Game Over</CentralMessage>}
-						{gameStart && <CentralMessage>Game Start</CentralMessage>}
-
+						{gameOver && (
+							<CentralMessage key="gameOver">Game Over</CentralMessage>
+						)}
+						{gameStart && (
+							<CentralMessage key="gameStart">Game Start</CentralMessage>
+						)}
 						<div>
 							<Display text={`Score: ${score}`} />
 							<Display text={`Rows: ${rows}`} />

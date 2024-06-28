@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const StyledTetrisWrapper = styled.div`
 	width: 100vw;
@@ -70,6 +70,11 @@ export const ToggleButton = styled.button`
 	cursor: pointer;
 `;
 
+const fadeInOut = keyframes`
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+`;
+
 export const CentralMessage = styled.div`
 	position: absolute;
 	top: 50%;
@@ -81,4 +86,5 @@ export const CentralMessage = styled.div`
 	background: rgba(0, 0, 0, 0.8);
 	padding: 20px;
 	border-radius: 10px;
+	animation: ${fadeInOut} 2s linear;
 `;
