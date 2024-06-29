@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useEffect } from 'react';
 
 const Btn = styled.button`
-	box-sizing: border-box;
+	display: block;
 	margin: 0 0 20px 0;
 	padding: 20px;
 	min-height: 30px;
@@ -30,13 +29,13 @@ const Btn = styled.button`
 
 const GameBtns = ({ gameStatus, cb1, cb2, cb3 }) => {
 	return (
-		<>
+		<div>
 			<Btn onClick={cb1}>게임 시작</Btn>
 			<Btn onClick={cb2}>
 				{gameStatus === 'paused' ? '게임 재개' : '일시 정지'}
 			</Btn>
 			<Btn onClick={cb3}>타일 배경 토글</Btn>
-		</>
+		</div>
 	);
 };
 

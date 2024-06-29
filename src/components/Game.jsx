@@ -16,13 +16,13 @@ import InfoBox from './InfoBox';
 import {
 	StyledTetrisWrapper,
 	StyledTetris,
-	ToggleButton,
 	LColumn,
 	LTop,
 	LBottom,
 	RColumn,
 	StyledSelect,
 	CentralMessage,
+	StyledSelectDiv,
 } from './GameStyles';
 import Next from './Next';
 import Hold from './Hold';
@@ -41,6 +41,7 @@ const Game = () => {
 	const [$useBackgroundImage, $setuseBackgroundImage] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [keyState, setKeyState] = useState({});
+	const [animationKey, setAnimationKey] = useState('');
 
 	const [
 		player,
@@ -71,15 +72,21 @@ const Game = () => {
 	const startGame = () => {
 		setStage(createStage());
 		setDropTime(1000 / ((selectedLevel + 1) * 3) + 200);
+		setDropTime(1000 / ((selectedLevel + 1) * 3) + 200);
 		resetPlayer();
 		setGameStatus(() => 'running');
-		setGamePhrase(() => 'game start');
+		setGamePhrase(() => {
+			const msg =
+				selectedLevel === 0 ? '테스트 모드 ' : 'level ' + selectedLevel;
+			return `게임 시작: ${msg}`;
+		});
 		setScore(0);
 		setRows(0);
 		setLevel(selectedLevel);
 		setSpacePressed(false);
 		wrapperRef.current.focus();
 		setHoldTetromino(null);
+		setAnimationKey((prev) => prev + '1');
 	};
 
 	const drop = useCallback(() => {
@@ -91,6 +98,7 @@ const Game = () => {
 				setGamePhrase(() => 'game over');
 				setDropTime(null);
 			} else {
+				console.log('일반 드랍');
 				updatePlayerPos({ x: 0, y: 0, collided: true });
 			}
 		}
@@ -120,6 +128,7 @@ const Game = () => {
 
 	const handleSpacePress = useCallback(() => {
 		if (!spacePressed) {
+			console.log('하드 드랍');
 			let yPos = player.pos.y;
 			while (
 				!checkCollision(player, stage, { x: 0, y: yPos - player.pos.y + 1 })
@@ -213,7 +222,7 @@ const Game = () => {
 
 	useInterval(
 		() => {
-			drop();
+			if (level !== 0) drop();
 		},
 		dropTime,
 		gameStatus
@@ -221,6 +230,7 @@ const Game = () => {
 
 	useEffect(() => {
 		if (clearedRows > 0) {
+			console.log('깨지는 드랍');
 			const calcScore = (rowsCleared) => {
 				const linePoints = [40, 100, 300, 1200];
 				if (rowsCleared > 0) {
@@ -261,7 +271,9 @@ const Game = () => {
 		<>
 			{/* 중앙 메시지 */}
 			{gamePhrase !== 'running' && (
-				<CentralMessage key={gamePhrase}>{gamePhrase}</CentralMessage>
+				<CentralMessage key={gamePhrase + animationKey}>
+					{gamePhrase}
+				</CentralMessage>
 			)}
 
 			<StyledTetrisWrapper role="button" tabIndex="0" ref={wrapperRef}>
@@ -276,20 +288,13 @@ const Game = () => {
 						<LBottom>
 							{/* 점수박스 */}
 							<div>
-								<Display text={`Score: ${score}`} />
-								<Display text={`Rows: ${rows}`} />
-								<Display text={`Level: ${level}`} />
+								<Display Ltext={`점수`} Rtext={score} />
+								<Display Ltext={`처리 행`} Rtext={rows} />
+								<Display Ltext={`현재 레벨`} Rtext={level} />
 							</div>
 
-							<div
-								style={{
-									display: 'flex',
-									flexDirection: 'column',
-									alignItems: 'center',
-									gap: '5px',
-									fontSize: '20px',
-								}}>
-								<label htmlFor="level-select">레벨 선택: </label>
+							<StyledSelectDiv>
+								레벨 선택
 								<StyledSelect
 									id="level-select"
 									value={selectedLevel}
@@ -300,7 +305,7 @@ const Game = () => {
 										</option>
 									))}
 								</StyledSelect>
-							</div>
+							</StyledSelectDiv>
 						</LBottom>
 					</LColumn>
 					<Stage
@@ -308,7 +313,7 @@ const Game = () => {
 						player={player}
 						$useBackgroundImage={$useBackgroundImage}
 					/>
-					<aside>
+					<RColumn>
 						<Next
 							nextTetrominos={nextTetrominos}
 							$useBackgroundImage={$useBackgroundImage}
@@ -319,7 +324,7 @@ const Game = () => {
 							cb2={pauseGameBtnClicked}
 							cb3={toggleBackground}
 						/>
-					</aside>
+					</RColumn>
 				</StyledTetris>
 			</StyledTetrisWrapper>
 			<InfoBox />

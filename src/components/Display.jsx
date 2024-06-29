@@ -3,8 +3,14 @@ import styled from 'styled-components';
 
 const StyledDisplay = styled.div`
 	box-sizing: border-box;
+
 	display: flex;
+	flex-direction: column;
 	align-items: center;
+	justify-content: center;
+	gap: 13px;
+	font-size: 25px;
+
 	margin: 0 0 20px 0;
 	padding: 15px;
 	border: 4px solid #333;
@@ -18,8 +24,17 @@ const StyledDisplay = styled.div`
 	width: 150px;
 `;
 
-const Display = ({ gameOver, text }) => (
-	<StyledDisplay $gameOver={gameOver}>{text}</StyledDisplay> // 수정된 부분
+const LtextWrap = styled.div``;
+const RtextWrap = styled.div`
+	font-weight: bold;
+	color: white;
+`;
+
+const Display = ({ gameOver, Ltext, Rtext }) => (
+	<StyledDisplay $gameOver={gameOver}>
+		<LtextWrap>{Ltext} </LtextWrap>
+		<RtextWrap>{Rtext}</RtextWrap>
+	</StyledDisplay> // 수정된 부분
 );
 
 export default Display;

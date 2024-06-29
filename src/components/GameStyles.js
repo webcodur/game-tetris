@@ -3,54 +3,54 @@ import styled, { keyframes } from 'styled-components';
 export const StyledTetrisWrapper = styled.div`
 	width: 100vw;
 	height: 100vh;
-	background: #000;
-
 	background-size: cover;
 	overflow: hidden;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background: black;
 `;
 
 export const StyledTetris = styled.div`
 	display: flex;
 	align-items: flex-start;
+	flex-direction: row;
+	justify-content: center;
 	padding: 40px;
 	margin: 0 auto;
-	width: 1300px;
+	height: 90vh;
 	background: black;
-
-	aside {
-		width: 100%;
-		max-width: 200px;
-		display: block;
-		padding: 0 20px;
-	}
 `;
 
 export const LColumn = styled.div`
+	width: 230px;
 	padding: 0px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	height: 90vh;
-	width: 500px;
-	margin-right: 20px;
+	height: 750px;
+	/* background: pink; */
 `;
 
-export const LTop = styled.div`
-	height: 400px;
-`;
+export const LTop = styled.div``;
 
 export const LBottom = styled.div`
-	height: 400px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 `;
 
-export const RColumn = styled.div``;
+export const RColumn = styled.div`
+	width: 230px;
+	height: 750px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-content: center;
+	padding: 0 20px;
+	/* background: pink; */
+`;
 
 export const ToggleButton = styled.button`
 	box-sizing: border-box;
@@ -68,13 +68,23 @@ export const ToggleButton = styled.button`
 	cursor: pointer;
 `;
 
-export const StyledSelect = styled.select`
-	width: 120px;
+export const StyledSelectDiv = styled.div`
 	padding: 10px;
 	border: 5px solid #333;
 	border-radius: 15px;
 	color: lightgray;
+	background: black;
 	margin: 0 auto;
+`;
+
+export const StyledSelect = styled.select`
+	padding: 5px;
+	cursor: pointer;
+	border: 2px solid #333;
+	border-radius: 15px;
+	color: lightgray;
+	background: black;
+	margin: 5px;
 `;
 
 const fadeInOut = keyframes`
