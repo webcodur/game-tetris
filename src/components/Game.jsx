@@ -26,6 +26,7 @@ import {
 } from './GameStyles';
 import Next from './Next';
 import Hold from './Hold';
+import { playSingleAudio } from '../playAudio';
 
 const Game = () => {
 	const [gameStatus, setGameStatus] = useState('Hello');
@@ -98,7 +99,7 @@ const Game = () => {
 				setGamePhrase(() => 'game over');
 				setDropTime(null);
 			} else {
-				console.log('일반 드랍');
+				playSingleAudio('drop.mp3');
 				updatePlayerPos({ x: 0, y: 0, collided: true });
 			}
 		}
@@ -128,7 +129,7 @@ const Game = () => {
 
 	const handleSpacePress = useCallback(() => {
 		if (!spacePressed) {
-			console.log('하드 드랍');
+			playSingleAudio('anchor.mp3');
 			let yPos = player.pos.y;
 			while (
 				!checkCollision(player, stage, { x: 0, y: yPos - player.pos.y + 1 })
@@ -230,7 +231,7 @@ const Game = () => {
 
 	useEffect(() => {
 		if (clearedRows > 0) {
-			console.log('깨지는 드랍');
+			playSingleAudio('lineClear.mp3');
 			const calcScore = (rowsCleared) => {
 				const linePoints = [40, 100, 300, 1200];
 				if (rowsCleared > 0) {
