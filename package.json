@@ -48,5 +48,6 @@
   "devDependencies": {
     "electron": "^31.1.0",
     "electron-packager": "^17.1.2"
-  }
+  },
+  "homepage": "https://webcodur.github.io/tetris"
 }
