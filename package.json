@@ -24,7 +24,8 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "electron-start": "electron ."
+    "electron-start": "electron .",
+    "package": "electron-packager . tetris --platform=win32 --arch=x64 --out=dist --overwrite"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +46,7 @@
     ]
   },
   "devDependencies": {
-    "electron": "^31.1.0"
+    "electron": "^31.1.0",
+    "electron-packager": "^17.1.2"
   }
 }

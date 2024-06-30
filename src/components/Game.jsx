@@ -119,7 +119,6 @@ const Game = () => {
         handleGameOver();
       } else {
         updatePlayerPos({ x: 0, y: 0, collided: true });
-        setKeyState({}); // 블럭이 새로 생성될 때 키 상태 초기화
       }
     }
   }, [player, stage, updatePlayerPos, handleGameOver]);
@@ -202,9 +201,13 @@ const Game = () => {
 
   const keyActions = useMemo(
     () => ({
-      37: (ctrlKey) => ($gameStatus === "running" ? (ctrlKey ? movePlayerToEdge("left") : movePlayer(-1)) : null),
-      39: (ctrlKey) => ($gameStatus === "running" ? (ctrlKey ? movePlayerToEdge("right") : movePlayer(1)) : null),
-      40: () => ($gameStatus === "running" ? dropPlayer() : null),
+      // 37: (ctrlKey) => (ctrlKey ? movePlayerToEdge("left") : movePlayer(-1)),
+      // 39: (ctrlKey) => (ctrlKey ? movePlayerToEdge("right") : movePlayer(1)),
+      // 40: () => dropPlayer(),
+
+      37: (ctrlKey) => (ctrlKey ? movePlayerToEdge("left") : movePlayer(-1)),
+      39: (ctrlKey) => (ctrlKey ? movePlayerToEdge("right") : movePlayer(1)),
+      40: () => dropPlayer(),
       38: () => playerRotate(stage, 1),
       88: () => playerRotate(stage, 1),
       90: () => playerRotate(stage, -1),
@@ -224,7 +227,7 @@ const Game = () => {
       movePlayerToEdge,
       handleNextGame,
       handleExitGame,
-      $gameStatus,
+      // $gameStatus,
     ],
   );
 
@@ -275,9 +278,11 @@ const Game = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       const keyCode = event.keyCode;
+
+      setKeyState((prev) => ({ ...prev, [keyCode]: true }));
+      setKeyDownTime((prev) => ({ ...prev, [keyCode]: Date.now() }));
+
       if ($gameStatus === "running" || $gameStatus === "clear") {
-        setKeyState((prev) => ({ ...prev, [keyCode]: true }));
-        setKeyDownTime((prev) => ({ ...prev, [keyCode]: Date.now() }));
         if (keyActions[keyCode]) {
           keyActions[keyCode](event.ctrlKey);
         }
