@@ -1,5 +1,5 @@
-import { createGlobalStyle } from 'styled-components';
-import Game from './components/Game';
+import { createGlobalStyle } from "styled-components";
+import Game from "./components/Game";
 
 const GlobalStyle = createGlobalStyle`
   body, html {
@@ -17,10 +17,10 @@ const GlobalStyle = createGlobalStyle`
 
 // ReactDOM.render 또는 App 컴포넌트 내에 GlobalStyle 컴포넌트를 추가
 const App = () => (
-	<>
-		<GlobalStyle />
-		<Game />
-	</>
+  <>
+    <GlobalStyle />
+    <Game />
+  </>
 );
 
 export default App;
