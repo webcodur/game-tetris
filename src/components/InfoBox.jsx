@@ -9,14 +9,11 @@ const InfoBoxStyle = styled.div`
   background: #333;
   color: white;
   border-radius: 20px;
-  width: 400px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  margin: 0 auto;
   gap: 10px;
   padding: 15px;
-  padding-left: 30px;
   font-size: 1.2rem;
   border: 2px solid lightgray;
 
@@ -155,7 +152,7 @@ const InfoBox = () => {
           setBoxOn((prev) => !prev);
         }}
       >
-        키 설정
+        키 설명
       </button>
     </InfoBoxStyle>
   );

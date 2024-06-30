@@ -7,14 +7,10 @@ const SettingsStyle = styled.div`
   background: #333;
   color: white;
   border-radius: 20px;
-  width: 400px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: 10px;
   padding: 15px;
-  padding-left: 30px;
   font-size: 1.2rem;
   border: 2px solid lightgray;
 
