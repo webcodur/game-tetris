@@ -279,6 +279,13 @@ const Game = () => {
     const handleKeyDown = (event) => {
       const keyCode = event.keyCode;
 
+      // [게임 클리어] 기타 키 접근제어
+      if ($gameStatus === "clear") {
+        if (keyCode === 89) handleNextGame(); // 'y'
+        if (keyCode === 78) handleExitGame(); // 'n'
+        return;
+      }
+
       setKeyState((prev) => ({ ...prev, [keyCode]: true }));
       setKeyDownTime((prev) => ({ ...prev, [keyCode]: Date.now() }));
 
