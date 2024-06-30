@@ -35,7 +35,8 @@ export async function playSingleAudio(fileName, identifier, onEndedCallback) {
   }
 
   try {
-    const response = await fetch(`/tetris/audio/${fileName}`);
+    const audioPath = `${process.env.PUBLIC_URL}/audio/`;
+    const response = await fetch(`${audioPath}${fileName}`);
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 

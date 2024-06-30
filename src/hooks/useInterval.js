@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export const useInterval = (dropCallback, delay, gameStatus) => {
+export const useInterval = (dropCallback, delay, $gameStatus) => {
   const savedCallback = useRef();
 
   useEffect(() => {
@@ -13,9 +13,9 @@ export const useInterval = (dropCallback, delay, gameStatus) => {
     }
 
     // 일시정지 상태가 아닐 때만 실행
-    if (delay !== null && gameStatus !== "paused" && gameStatus !== "clear") {
+    if (delay !== null && $gameStatus !== "paused" && $gameStatus !== "clear") {
       const id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
-  }, [delay, gameStatus]);
+  }, [delay, $gameStatus]);
 };

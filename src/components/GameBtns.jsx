@@ -27,11 +27,11 @@ const Btn = styled.button`
   }
 `;
 
-const GameBtns = ({ gameStatus, cb1, cb2, cb3 }) => {
+const GameBtns = ({ $gameStatus, cb1, cb2, cb3 }) => {
   return (
     <div>
       <Btn onClick={cb1}>게임 시작 ( ↲ )</Btn>
-      <Btn onClick={cb2}>{gameStatus === "paused" ? "게임 재개 (P)" : "일시 정지 (P)"}</Btn>
+      <Btn onClick={cb2}>{$gameStatus === "paused" ? "게임 재개 (P)" : "일시 정지 (P)"}</Btn>
       <Btn onClick={cb3}>타일 배경 토글</Btn>
     </div>
   );
@@ -39,4 +39,4 @@ const GameBtns = ({ gameStatus, cb1, cb2, cb3 }) => {
 
 export default GameBtns;
 
-// gameStatus
+// $gameStatus

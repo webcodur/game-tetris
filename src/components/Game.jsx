@@ -40,7 +40,7 @@ const Game = () => {
   const [startLevel] = useAtom(startLevelAtom);
   const [linesToClear] = useAtom(linesToClearAtom);
   const [level, setLevel] = useState(startLevel);
-  const [gameStatus, setGameStatus] = useState("Hello");
+  const [$gameStatus, $setgameStatus] = useState("Hello");
   const [gamePhrase, setGamePhrase] = useState("Hello");
   const [dropTime, setDropTime] = useState(null);
   const [gameTime, setGameTime] = useState(0);
@@ -71,23 +71,23 @@ const Game = () => {
   const gameStart = useCallback(async () => {
     changeDropTimeByLevel(selectedLevel.current, setDropTime);
     resetPlayer();
-    setGameStatus("running");
+    $setgameStatus("running");
     setAnimationKey((prev) => prev + "1");
     const curLvl = selectedLevel.current;
     const isTest = curLvl === 0;
     setGamePhrase(`게임 시작: ${isTest ? "테스트 모드 " : "level " + curLvl}`);
     const id = setInterval(() => setGameTime((prev) => prev + 1), 1000);
     setIntervalId(id);
-  }, [resetPlayer, setGameStatus, setGamePhrase, setAnimationKey]);
+  }, [resetPlayer, $setgameStatus, setGamePhrase, setAnimationKey]);
 
   // [게임 시작 3초전]
   const delayedGameStart = useCallback(async () => {
-    if (gameStatus === "ready") return;
-    setGameStatus("ready");
+    if ($gameStatus === "ready") return;
+    $setgameStatus("ready");
     setGamePhrase("3");
     setTimeout(() => setGamePhrase("2"), 1000);
     setTimeout(() => setGamePhrase("1"), 2000);
-    setTimeout(() => setGameStatus("starting"), 3000);
+    setTimeout(() => $setgameStatus("starting"), 3000);
     setDropTime(null);
     setStage(createStage());
     setScore(0);
@@ -98,14 +98,14 @@ const Game = () => {
     clearInterval(intervalId);
     setGameTime(0);
     playSingleAudio("countdown.mp3");
-  }, [setStage, setHoldTetromino, setDropTime, selectedLevel, gameStatus, intervalId]);
+  }, [setStage, setHoldTetromino, setDropTime, selectedLevel, $gameStatus, intervalId]);
 
   useEffect(() => {
-    if (gameStatus === "starting") gameStart();
-  }, [gameStatus, gameStart]);
+    if ($gameStatus === "starting") gameStart();
+  }, [$gameStatus, gameStart]);
 
   const handleGameOver = useCallback(() => {
-    setGameStatus("game over");
+    $setgameStatus("game over");
     setGamePhrase("game over");
     setDropTime(null);
     clearInterval(intervalId); // 게임 종료 시 타이머 클리어
@@ -160,8 +160,8 @@ const Game = () => {
   }, [player, stage, updatePlayerPos, handleGameOver]);
 
   const handleRestoreBlocks = useCallback(() => {
-    if (gameStatus === "running") swapWithHold();
-  }, [gameStatus, swapWithHold]);
+    if ($gameStatus === "running") swapWithHold();
+  }, [$gameStatus, swapWithHold]);
 
   const handleNextGame = useCallback(() => {
     selectedLevel.current++;
@@ -169,7 +169,7 @@ const Game = () => {
   }, [selectedLevel, delayedGameStart]);
 
   const handleExitGame = useCallback(() => {
-    setGameStatus("exit");
+    $setgameStatus("exit");
     setGamePhrase("게임 종료");
     setDropTime(null);
     setStage(createStage());
@@ -178,33 +178,33 @@ const Game = () => {
     setHoldTetromino(null);
     setAnimationKey((prev) => prev + "1");
     clearInterval(intervalId); // 게임 종료 시 타이머 클리어
-  }, [setGameStatus, setGamePhrase, setDropTime, setStage, setHoldTetromino, wrapperRef, setAnimationKey, intervalId]);
+  }, [$setgameStatus, setGamePhrase, setDropTime, setStage, setHoldTetromino, wrapperRef, setAnimationKey, intervalId]);
 
   const pause = useCallback(() => {
-    setGameStatus("paused");
+    $setgameStatus("paused");
     setGamePhrase("일시 정지");
     clearInterval(intervalId); // 게임 일시정지 시 타이머 클리어
-  }, [setGameStatus, setGamePhrase, intervalId]);
+  }, [$setgameStatus, setGamePhrase, intervalId]);
 
   const resume = useCallback(() => {
     wrapperRef.current.focus();
-    setGameStatus("running");
+    $setgameStatus("running");
     setGamePhrase("게임 재개");
     const id = setInterval(() => setGameTime((prev) => prev + 1), 1000);
     setIntervalId(id); // 게임 재개 시 타이머 시작
   }, []);
 
   const handlePauseResumeToggle = useCallback(() => {
-    if (gameStatus !== "running" && gameStatus !== "paused") return; // 블락 사운드 내지 리턴
-    if (gameStatus === "paused") resume();
-    else if (gameStatus === "running") pause();
-  }, [gameStatus, resume, pause]);
+    if ($gameStatus !== "running" && $gameStatus !== "paused") return; // 블락 사운드 내지 리턴
+    if ($gameStatus === "paused") resume();
+    else if ($gameStatus === "running") pause();
+  }, [$gameStatus, resume, pause]);
 
   const keyActions = useMemo(
     () => ({
-      37: (ctrlKey) => (gameStatus === "running" ? (ctrlKey ? movePlayerToEdge("left") : movePlayer(-1)) : null),
-      39: (ctrlKey) => (gameStatus === "running" ? (ctrlKey ? movePlayerToEdge("right") : movePlayer(1)) : null),
-      40: () => (gameStatus === "running" ? dropPlayer() : null),
+      37: (ctrlKey) => ($gameStatus === "running" ? (ctrlKey ? movePlayerToEdge("left") : movePlayer(-1)) : null),
+      39: (ctrlKey) => ($gameStatus === "running" ? (ctrlKey ? movePlayerToEdge("right") : movePlayer(1)) : null),
+      40: () => ($gameStatus === "running" ? dropPlayer() : null),
       38: () => playerRotate(stage, 1),
       88: () => playerRotate(stage, 1),
       90: () => playerRotate(stage, -1),
@@ -224,7 +224,7 @@ const Game = () => {
       movePlayerToEdge,
       handleNextGame,
       handleExitGame,
-      gameStatus,
+      $gameStatus,
     ],
   );
 
@@ -275,22 +275,22 @@ const Game = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       const keyCode = event.keyCode;
-      if (gameStatus === "running" || gameStatus === "clear") {
+      if ($gameStatus === "running" || $gameStatus === "clear") {
         setKeyState((prev) => ({ ...prev, [keyCode]: true }));
         setKeyDownTime((prev) => ({ ...prev, [keyCode]: Date.now() }));
         if (keyActions[keyCode]) {
           keyActions[keyCode](event.ctrlKey);
         }
       }
-      if (keyCode === 13 && gameStatus !== "ready") delayedGameStart();
-      if (keyCode === 80 && gameStatus === "paused") resume();
-      if (keyCode === 80 && gameStatus === "running") pause();
+      if (keyCode === 13 && $gameStatus !== "ready") delayedGameStart();
+      if (keyCode === 80 && $gameStatus === "paused") resume();
+      if (keyCode === 80 && $gameStatus === "running") pause();
     };
 
     const handleKeyUp = (event) => {
       const keyCode = event.keyCode;
       setKeyState((prev) => ({ ...prev, [keyCode]: false }));
-      if (gameStatus === "running" && keyCode === 40) {
+      if ($gameStatus === "running" && keyCode === 40) {
         changeDropTimeByLevel(level, setDropTime);
       }
       setKeyDownTime((prev) => ({ ...prev, [keyCode]: null }));
@@ -303,14 +303,14 @@ const Game = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [gameStatus, keyActions, level, delayedGameStart, pause, resume]);
+  }, [$gameStatus, keyActions, level, delayedGameStart, pause, resume]);
 
   useInterval(
     () => {
       if (level !== 0) drop();
     },
     dropTime,
-    gameStatus,
+    $gameStatus,
   );
 
   useEffect(() => {
@@ -331,7 +331,7 @@ const Game = () => {
 
   useEffect(() => {
     if (rows >= linesToClear) {
-      setGameStatus("clear");
+      $setgameStatus("clear");
       setGamePhrase("game clear !!!");
       setStage(createStage());
       clearInterval(intervalId); // 레벨 클리어 시 타이머 클리어
@@ -346,13 +346,13 @@ const Game = () => {
   return (
     <>
       {/* 중앙 메시지 */}
-      {gamePhrase !== "running" && gameStatus !== "clear" && (
-        <CentralMessage key={gamePhrase + animationKey} gameStatus={gameStatus}>
+      {gamePhrase !== "running" && $gameStatus !== "clear" && (
+        <CentralMessage key={gamePhrase + animationKey} $gameStatus={$gameStatus}>
           {gamePhrase}
         </CentralMessage>
       )}
 
-      {gameStatus === "clear" && (
+      {$gameStatus === "clear" && (
         <CentralButtonWrapper key={gamePhrase + animationKey}>
           <div>GAME CLEAR!</div>
           <div>클리어 시간: {new Date(gameTime * 1000).toISOString().substr(11, 8)}</div>
@@ -398,10 +398,10 @@ const Game = () => {
               </StyledSelectDiv>
             </LBottom>
           </LColumn>
-          <Stage stage={stage} player={player} $useBackgroundImage={$useBackgroundImage} gameStatus={gameStatus} />
+          <Stage stage={stage} player={player} $useBackgroundImage={$useBackgroundImage} $gameStatus={$gameStatus} />
           <RColumn>
             <Next nextTetrominos={nextTetrominos} $useBackgroundImage={$useBackgroundImage} />
-            <GameBtns gameStatus={gameStatus} cb1={delayedGameStart} cb2={handlePauseResumeToggle} cb3={toggleBackground} />
+            <GameBtns $gameStatus={$gameStatus} cb1={delayedGameStart} cb2={handlePauseResumeToggle} cb3={toggleBackground} />
           </RColumn>
         </StyledTetris>
       </StyledTetrisWrapper>

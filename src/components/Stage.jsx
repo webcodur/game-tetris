@@ -12,7 +12,7 @@ const StyledStage = styled.div`
   background: #111;
 `;
 
-const Stage = ({ stage, player, $useBackgroundImage, gameStatus }) => {
+const Stage = ({ stage, player, $useBackgroundImage, $gameStatus }) => {
   const dpos = calculateDropPosition(player, stage);
   const pTetH = player.tetromino.length;
   const pTetW = player.tetromino[0].length;
@@ -23,7 +23,7 @@ const Stage = ({ stage, player, $useBackgroundImage, gameStatus }) => {
         row.map((cell, x) => {
           // 실루엣 출력 여부
           let isSil;
-          if (gameStatus === "running") {
+          if ($gameStatus === "running") {
             isSil =
               dpos.y <= y && y < dpos.y + pTetH && dpos.x <= x && x < dpos.x + pTetW && player.tetromino[y - dpos.y][x - dpos.x] !== 0;
           } else isSil = false;

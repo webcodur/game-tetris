@@ -118,7 +118,7 @@ export const CentralMessage = styled.div`
   background: rgba(0, 0, 0, 0.8);
   padding: 20px;
   border-radius: 10px;
-  ${(props) => (props.gameStatus === "ready" ? countdownEffect : fadeInOutAnimation)};
+  ${(props) => (props.$gameStatus === "ready" ? countdownEffect : fadeInOutAnimation)};
 `;
 
 export const CentralButtonWrapper = styled.div`
