@@ -37,6 +37,9 @@ const InfoBoxStyle = styled.div`
 			text-align: left;
 			vertical-align: middle;
 		}
+		th {
+			text-align: center;
+		}
 
 		svg {
 			font-size: 1rem;
@@ -52,21 +55,10 @@ const InfoBoxStyle = styled.div`
 `;
 
 const InfoBox = () => {
-	const [boxOn, setBoxOn] = useState(true);
-	useEffect(() => {
-		console.log('boxOn', boxOn);
-	}, [boxOn]);
+	const [boxOn, setBoxOn] = useState(false);
 
 	return (
 		<InfoBoxStyle>
-			{/* ON/OFF 버튼 */}
-			<button
-				onClick={() => {
-					setBoxOn((prev) => !prev);
-				}}>
-				키 설정 [{boxOn ? '닫기' : '열기'}]
-			</button>
-
 			{/* 설명서 */}
 			{boxOn && (
 				<table>
@@ -141,6 +133,14 @@ const InfoBox = () => {
 					</tbody>
 				</table>
 			)}
+
+			{/* ON/OFF 버튼 */}
+			<button
+				onClick={() => {
+					setBoxOn((prev) => !prev);
+				}}>
+				키 설정
+			</button>
 		</InfoBoxStyle>
 	);
 };

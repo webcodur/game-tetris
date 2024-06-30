@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TETROMINOS } from '../tetrominos';
+import { TETROMINOS } from '../utils/tetrominos';
 import cellBackground from '../assets/cell-background.png'; // 이미지 파일 경로
 
 const StyledCell = styled.div`

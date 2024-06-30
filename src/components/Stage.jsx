@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Cell from './Cell';
-import { calculateDropPosition } from '../gameHelpers';
+import { calculateDropPosition } from 'utils/gameHelpers';
 
 const StyledStage = styled.div`
 	display: grid;
@@ -12,25 +12,32 @@ const StyledStage = styled.div`
 	background: #111;
 `;
 
-const Stage = ({ stage, player, $useBackgroundImage }) => {
-	const dropPosition = calculateDropPosition(player, stage);
+const Stage = ({ stage, player, $useBackgroundImage, gameStatus }) => {
+	const dpos = calculateDropPosition(player, stage);
+	const pTetH = player.tetromino.length;
+	const pTetW = player.tetromino[0].length;
 
 	return (
 		<StyledStage width={stage[0].length} height={stage.length}>
 			{stage.map((row, y) =>
 				row.map((cell, x) => {
-					const $isSilhouette =
-						dropPosition.y <= y &&
-						y < dropPosition.y + player.tetromino.length &&
-						dropPosition.x <= x &&
-						x < dropPosition.x + player.tetromino[0].length &&
-						player.tetromino[y - dropPosition.y][x - dropPosition.x] !== 0;
+					// 실루엣 출력 여부
+					let isSil;
+					if (gameStatus === 'running') {
+						isSil =
+							dpos.y <= y &&
+							y < dpos.y + pTetH &&
+							dpos.x <= x &&
+							x < dpos.x + pTetW &&
+							player.tetromino[y - dpos.y][x - dpos.x] !== 0;
+					} else isSil = false;
+
 					return (
 						<Cell
 							key={x}
 							type={cell[0]}
 							$useBackgroundImage={$useBackgroundImage}
-							$isSilhouette={$isSilhouette}
+							$isSilhouette={isSil}
 						/>
 					);
 				})

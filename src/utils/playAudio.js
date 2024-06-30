@@ -20,58 +20,53 @@ const getAudioContext = () => {
  * 파일명에 해당하는 오디오 파일을 재생하는 비동기 함수 (재생 완료 직후 작업이 필요할 시 비동기로 호출)
  * @param {string} fileName 파일명
  * @param {string} [identifier] 식별자 (선택 사항)
- * @param {boolean} [isMuteController] 음소거 컨트롤러 여부 (선택 사항)
  * @param {function} [onEndedCallback] 음원 종료 시 호출될 콜백 함수 (선택 사항)
  */
-export async function playSingleAudio(
-	fileName,
-	identifier,
-	isMuteController = 'false',
-	onEndedCallback
-) {
+export async function playSingleAudio(fileName, identifier, onEndedCallback) {
 	// 식별자가 없는 경우 식별자를 fileName으로 설정하여 기존 코드 호환성 유지
 	if (typeof identifier !== 'string') {
-		onEndedCallback = isMuteController;
-		isMuteController = identifier || 'false';
+		onEndedCallback = identifier;
 		identifier = fileName;
 	}
-
-	// <음원 실행 여부>
-	const isSoundOn = localStorage.getItem('isSoundOn') === 'true';
-	const isController = isMuteController === 'true';
-	if (!isSoundOn && isController) return;
-	if (isSoundOn && !isController) return;
-
 	const audioContext = getAudioContext();
 	if (audioContext.state === 'suspended') {
 		await audioContext.resume(); // 재시작
 	}
 
 	try {
+		console.log('entered...');
 		const response = await fetch(`/audio/${fileName}`);
+		console.log('response', response);
 		const arrayBuffer = await response.arrayBuffer();
-		const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+		console.log('arrayBuffer', arrayBuffer);
 
-		const sourceNode = audioContext.createBufferSource(); // 새로운 소스 노드 생성
+		audioContext.decodeAudioData(
+			arrayBuffer,
+			(audioBuffer) => {
+				console.log('audioBuffer', audioBuffer);
+				const sourceNode = audioContext.createBufferSource(); // 새로운 소스 노드 생성
+				console.log('sourceNode', sourceNode);
+				gainNode.gain.value = 1;
 
-		const storedVolume = localStorage.getItem('volume');
-		const volume = storedVolume ? parseInt(storedVolume, 10) / 100 : 1;
-		gainNode.gain.value = volume; // GainNode의 gain 속성을 설정하여 볼륨 조절
+				sourceNode.buffer = audioBuffer;
+				sourceNode.connect(gainNode);
 
-		sourceNode.buffer = audioBuffer;
-		sourceNode.connect(gainNode);
+				sourceNode.start(0);
+				sourceNodes.push({ sourceNode, identifier }); // 소스 노드와 식별자를 배열에 추가
 
-		sourceNode.start(0);
-		sourceNodes.push({ sourceNode, identifier }); // 소스 노드와 식별자를 배열에 추가
-
-		sourceNode.onended = () => {
-			sourceNodes = sourceNodes.filter(
-				(node) => node.sourceNode !== sourceNode
-			); // 재생 완료 시 배열에서 제거
-			if (typeof onEndedCallback === 'function') {
-				onEndedCallback(); // 콜백 함수 호출
+				sourceNode.onended = () => {
+					sourceNodes = sourceNodes.filter(
+						(node) => node.sourceNode !== sourceNode
+					); // 재생 완료 시 배열에서 제거
+					if (typeof onEndedCallback === 'function') {
+						onEndedCallback(); // 콜백 함수 호출
+					}
+				};
+			},
+			(error) => {
+				console.error('오디오 데이터 디코딩 중 오류 발생:', error);
 			}
-		};
+		);
 	} catch (error) {
 		console.error('오디오 재생 중 오류 발생:', error);
 	}

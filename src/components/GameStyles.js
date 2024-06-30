@@ -106,3 +106,37 @@ export const CentralMessage = styled.div`
 	border-radius: 10px;
 	animation: ${fadeInOut} 2s linear forwards;
 `;
+
+export const CentralButtonWrapper = styled.div`
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-family: Pixel, Arial, Helvetica, sans-serif;
+	color: #fff;
+	font-size: 1.5rem;
+	background: rgba(0, 0, 0, 0.8);
+	padding: 20px;
+	border-radius: 5px;
+	border: 1px solid red;
+	div {
+		text-align: center;
+		line-height: 50px;
+		button {
+			cursor: pointer;
+			font-size: 20px;
+			width: 30px;
+			height: 30px;
+			border-radius: 10px;
+			background-color: black;
+			color: white;
+			&:hover {
+				background-color: wheat;
+				color: black;
+				font-weight: bold;
+			}
+		}
+	}
+`;
+
+export const aaa = styled.button``;
