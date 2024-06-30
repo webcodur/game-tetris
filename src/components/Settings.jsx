@@ -171,7 +171,7 @@ const Settings = () => {
               </tr>
             </tbody>
           </table>
-          <br />
+          <div style={{ margin: "0px" }} />
           <button onClick={handleSettings}>설정 적용</button>
           <hr />
         </>

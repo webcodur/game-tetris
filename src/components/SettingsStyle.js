@@ -65,7 +65,7 @@ const SettingsStyle = styled.div`
   }
   hr {
     width: 350px;
-    margin-left: -10px;
+    text-align: center;
   }
 `;
 
