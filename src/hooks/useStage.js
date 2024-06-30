@@ -28,14 +28,19 @@ export const useStage = (player, resetPlayer) => {
         row.forEach((value, x) => {
           if (value !== 0) {
             // 테트로미노의 블록이 비어있지 않을 때
+            // 각 블록의 게임판 내 위치를 계산
+            const blockY = y + player.pos.y;
+            const blockX = x + player.pos.x;
+
+            // 각 블록이 게임판의 경계를 벗어나지 않는지 확인
             if (
-              y + player.pos.y >= 0 &&
-              y + player.pos.y < newStage.length &&
-              x + player.pos.x >= 0 &&
-              x + player.pos.x < newStage[0].length
+              blockY >= 0 && // 위쪽 경계 확인
+              blockY < newStage.length && // 아래쪽 경계 확인
+              blockX >= 0 && // 왼쪽 경계 확인
+              blockX < newStage[0].length // 오른쪽 경계 확인
             ) {
               // 테트로미노의 위치를 게임판에 반영
-              newStage[y + player.pos.y][x + player.pos.x] = [value, `${player.collided ? "merged" : "clear"}`];
+              newStage[blockY][blockX] = [value, `${player.collided ? "merged" : "clear"}`];
             }
           }
         });
@@ -55,3 +60,13 @@ export const useStage = (player, resetPlayer) => {
 
   return [stage, setStage, clearedRows, setClearedRows];
 };
+
+// clear 상태:
+// 테트로미노가 아직 이동 중이거나 내려오고 있는 상태.
+// 테트로미노 블록이 이동할 수 있는 상태를 의미한다.
+// 이 상태에서는 테트로미노 블록이 다른 블록이나 바닥에 닿지 않아서 계속 움직일 수 있다.
+
+// merged 상태:
+// 테트로미노가 더 이상 이동하지 않는 상태.
+// 테트로미노 블록이 바닥이나 다른 블록에 닿아서 고정된 상태를 의미한다.
+// 이 상태에서는 테트로미노 블록이 이동을 멈추고 게임판의 일부가 되어 더 이상 움직이지 않는다.
