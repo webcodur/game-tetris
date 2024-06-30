@@ -202,9 +202,9 @@ const Game = () => {
 
   const keyActions = useMemo(
     () => ({
-      37: (ctrlKey) => (ctrlKey ? movePlayerToEdge("left") : movePlayer(-1)),
-      39: (ctrlKey) => (ctrlKey ? movePlayerToEdge("right") : movePlayer(1)),
-      40: () => dropPlayer(),
+      37: (ctrlKey) => (gameStatus === "running" ? (ctrlKey ? movePlayerToEdge("left") : movePlayer(-1)) : null),
+      39: (ctrlKey) => (gameStatus === "running" ? (ctrlKey ? movePlayerToEdge("right") : movePlayer(1)) : null),
+      40: () => (gameStatus === "running" ? dropPlayer() : null),
       38: () => playerRotate(stage, 1),
       88: () => playerRotate(stage, 1),
       90: () => playerRotate(stage, -1),
@@ -213,7 +213,6 @@ const Game = () => {
       67: () => handleRestoreBlocks(),
       89: () => handleNextGame(), // 'y'
       78: () => handleExitGame(), // 'n'
-      80: () => handlePauseResumeToggle(),
     }),
     [
       movePlayer,
@@ -225,7 +224,7 @@ const Game = () => {
       movePlayerToEdge,
       handleNextGame,
       handleExitGame,
-      handlePauseResumeToggle,
+      gameStatus,
     ],
   );
 
@@ -276,16 +275,16 @@ const Game = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       const keyCode = event.keyCode;
-      setKeyState((prev) => ({ ...prev, [keyCode]: true }));
-      setKeyDownTime((prev) => ({ ...prev, [keyCode]: Date.now() }));
       if (gameStatus === "running" || gameStatus === "clear") {
+        setKeyState((prev) => ({ ...prev, [keyCode]: true }));
+        setKeyDownTime((prev) => ({ ...prev, [keyCode]: Date.now() }));
         if (keyActions[keyCode]) {
           keyActions[keyCode](event.ctrlKey);
         }
       }
-      if (keyCode === 13 && gameStatus !== "ready") {
-        delayedGameStart();
-      }
+      if (keyCode === 13 && gameStatus !== "ready") delayedGameStart();
+      if (keyCode === 80 && gameStatus === "paused") resume();
+      if (keyCode === 80 && gameStatus === "running") pause();
     };
 
     const handleKeyUp = (event) => {
@@ -304,7 +303,7 @@ const Game = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [gameStatus, keyActions, level]);
+  }, [gameStatus, keyActions, level, delayedGameStart, pause, resume]);
 
   useInterval(
     () => {
