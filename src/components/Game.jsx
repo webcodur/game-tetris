@@ -112,12 +112,18 @@ const Game = () => {
   }, [intervalId]);
 
   const drop = useCallback(() => {
+    // 다음 칸 비어있음
     if (!checkCollision(player, stage, { x: 0, y: 1 })) {
       updatePlayerPos({ x: 0, y: 1, collided: false });
-    } else {
+    }
+    // 다음 칸 막혀있음
+    else {
+      // 위로도 막혀있음
       if (player.pos.y <= 0) {
         handleGameOver();
-      } else {
+      }
+      // 충돌 처리
+      else {
         updatePlayerPos({ x: 0, y: 0, collided: true });
       }
     }
@@ -154,7 +160,6 @@ const Game = () => {
       handleGameOver();
     } else {
       updatePlayerPos({ x: 0, y: yPos - player.pos.y, collided: true });
-      setKeyState({}); // 블럭이 새로 생성될 때 키 상태 초기화
     }
   }, [player, stage, updatePlayerPos, handleGameOver]);
 
@@ -315,7 +320,7 @@ const Game = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [$gameStatus, keyActions, level, delayedGameStart, pause, resume]);
+  }, [$gameStatus, keyActions, level, delayedGameStart, pause, resume, handleNextGame, handleExitGame]);
 
   useInterval(
     () => {
