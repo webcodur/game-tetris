@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/tetris/static/js/main.c889a45c.js",
+    "main.js": "/tetris/static/js/main.a3fc5c47.js",
     "index.html": "/tetris/index.html",
-    "main.c889a45c.js.map": "/tetris/static/js/main.c889a45c.js.map"
+    "main.a3fc5c47.js.map": "/tetris/static/js/main.a3fc5c47.js.map"
   },
   "entrypoints": [
-    "static/js/main.c889a45c.js"
+    "static/js/main.a3fc5c47.js"
   ]
 }
