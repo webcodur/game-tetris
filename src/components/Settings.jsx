@@ -13,13 +13,9 @@ Modal.setAppElement("#root");
 
 const Settings = () => {
   const [boxOn, setBoxOn] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-
-  // LOCK
-  const [lock, setLock] = useAtom(lockAtom);
 
   // GLOBAL VALUES
   const [DAS, setDAS] = useAtom(DasAtom);
@@ -32,8 +28,6 @@ const Settings = () => {
   const [localARR, setLocalARR] = useState(ARR);
   const [localStartLevel, SetLocalStartLevel] = useState(startLevel);
   const [localLinesToClear, setlocalLinesToClear] = useState(linesToClear);
-
-  const handleChange = (event) => setInputValue(event.target.value);
 
   const handleStartLevelChange = (event) => {
     const value = parseInt(event.target.value, 10);
@@ -83,15 +77,9 @@ const Settings = () => {
     }
   };
 
-  useEffect(() => {
-    if (inputValue === "123123") setLock(false);
-  }, [inputValue, setLock]);
-
   return (
     <SettingsStyle>
-      {lock && <input type="password" value={inputValue} onChange={handleChange} placeholder="관리자 비밀번호" />}
-
-      {boxOn && !lock && (
+      {boxOn && (
         <>
           <table>
             <thead>
