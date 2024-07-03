@@ -1,5 +1,5 @@
 {
-  "name": "tetris",
+  "name": "game-tetris",
   "version": "0.1.0",
   "private": true,
   "main": "main.js",
@@ -25,7 +25,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "electron-start": "electron .",
-    "package": "electron-packager . tetris --platform=win32 --arch=x64 --out=dist --overwrite"
+    "package": "electron-packager . game-tetris --platform=win32 --arch=x64 --out=dist --overwrite"
   },
   "eslintConfig": {
     "extends": [
@@ -49,5 +49,5 @@
     "electron": "^31.1.0",
     "electron-packager": "^17.1.2"
   },
-  "homepage": "https://webcodur.github.io/tetris"
+  "homepage": "https://webcodur.github.io/game-tetris"
 }
